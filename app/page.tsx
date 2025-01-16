@@ -40,12 +40,12 @@ const cryptia = Cryptia({
       return
     }
     
-    let contentx = cryptia.encrypt(content, encryptionKey);  // used cryptia encryption
+    let {data:contentx} = cryptia.encrypt(content, encryptionKey);  // used cryptia encryption
     
-console.log(contentx);
+console.log(contentx,"hoookkm");
     const { data, error } = await supabase
       .from('pastes')
-      .insert([{ code, content:contentx["data"], title }])
+      .insert([{ code, content:contentx, title }])
 
     if (error) {
       toast.error('Failed to submit paste')
