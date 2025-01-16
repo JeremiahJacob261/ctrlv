@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Cryptia from '@/lib/cryptia';
 import { Lock } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,7 +13,7 @@ import { createClient } from '@supabase/supabase-js'
 
 const URL = "https://vmzqgtstmtypihqzfryk.supabase.co";
 const ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZtenFndHN0bXR5cGlocXpmcnlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYyOTg2NjEsImV4cCI6MjA0MTg3NDY2MX0.YFPaADazz8hWfzJid5bxTYD2M4_X6KnxRco_VzLagtA";
-
+const encryptionKey = "KRYGHAZXY89VB";
 // Initialize Supabase client
 const supabase = createClient(URL, ANON)
 
@@ -29,6 +30,12 @@ export default function PasteList() {
   const [selectedPaste, setSelectedPaste] = useState<Paste | null>(null)
   const [inputCode, setInputCode] = useState('')
 
+  const cryptia = Cryptia({
+    obfuscationLevel: 10,
+    logging: true,
+    preserveWhitespace: true
+  })
+  
   useEffect(() => {
     fetchPastes()
   }, [])
@@ -62,6 +69,14 @@ export default function PasteList() {
   function formatDate(dateString: string) {
     const date = new Date(dateString)
     return date.toLocaleString()
+  }
+
+  function decryptor(text:string){
+   let {data: result} =  cryptia.decrypt(
+      text,
+      encryptionKey
+    );
+    return result;
   }
 
   return (
@@ -104,7 +119,7 @@ export default function PasteList() {
                     {selectedPaste && inputCode === selectedPaste.code && (
                       <div className="mt-4">
                         <h3 className="font-bold mb-2">{selectedPaste.title || 'Untitled'}</h3>
-                        <p className="whitespace-pre-wrap">{selectedPaste.content}</p>
+                        <p className="whitespace-pre-wrap">{decryptor(selectedPaste.content)}</p>
                       </div>
                     )}
                   </DialogContent>
