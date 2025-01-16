@@ -7,15 +7,24 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Link from 'next/link'
+import Cryptia from '@/lib/cryptia';
 import { createClient } from '@supabase/supabase-js'
 
 
 const URL = "https://vmzqgtstmtypihqzfryk.supabase.co";
 const ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZtenFndHN0bXR5cGlocXpmcnlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYyOTg2NjEsImV4cCI6MjA0MTg3NDY2MX0.YFPaADazz8hWfzJid5bxTYD2M4_X6KnxRco_VzLagtA";
-
+const encryptionKey = "KRYGHAZXY89VB";
 const supabase = createClient(URL, ANON)
 
 export default function PastebinReplica() {
+
+  // Initialize Cryptia with custom settings.
+const cryptia = Cryptia({
+  obfuscationLevel: 10,
+  logging: true,
+  preserveWhitespace: true
+})
+
   const [code, setCode] = useState('')
   const [content, setContent] = useState('')
   const [title, setTitle] = useState('')
@@ -31,9 +40,12 @@ export default function PastebinReplica() {
       return
     }
     
+    let contentx = cryptia.encrypt(content, encryptionKey);  // used cryptia encryption
+    
+console.log(contentx);
     const { data, error } = await supabase
       .from('pastes')
-      .insert([{ code, content, title }])
+      .insert([{ code, content:contentx["data"], title }])
 
     if (error) {
       toast.error('Failed to submit paste')
