@@ -124,7 +124,7 @@ export default function PasteList() {
                       <Button onClick={handleCodeSubmit}>Submit</Button>
                     </div>
                     {selectedPaste && inputCode === selectedPaste.code && (
-                      <div className="mt-4">
+                      <div className="mt-4 bg-blue-100 p-4 rounded">
                         <h3 className="font-bold mb-2">{selectedPaste.title || 'Untitled'}</h3>
                         <p onClick={()=>{ clipcopy(decryptor(selectedPaste.content)) }} className="whitespace-pre-wrap">{decryptor(selectedPaste.content)}</p>
                       <p onClick={()=>{ clipcopy(decryptor(selectedPaste.content)) }}  className="text-sm text-blue-900">click to copy</p>
