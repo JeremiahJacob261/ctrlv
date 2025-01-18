@@ -79,6 +79,13 @@ export default function PasteList() {
     return result;
   }
 
+  function clipcopy(text:string) {
+      navigator.clipboard.writeText(text).then(function() {
+        toast.success('Copied to clipboard')
+      }, function(err) {
+        toast.error('Failed to copy to clipboard')
+      });
+  }
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
@@ -119,7 +126,8 @@ export default function PasteList() {
                     {selectedPaste && inputCode === selectedPaste.code && (
                       <div className="mt-4">
                         <h3 className="font-bold mb-2">{selectedPaste.title || 'Untitled'}</h3>
-                        <p className="whitespace-pre-wrap">{decryptor(selectedPaste.content)}</p>
+                        <p onClick={()=>{ clipcopy(decryptor(selectedPaste.content)) }} className="whitespace-pre-wrap">{decryptor(selectedPaste.content)}</p>
+                      <p onClick={()=>{ clipcopy(decryptor(selectedPaste.content)) }}  className="text-sm text-blue-900">click to copy</p>
                       </div>
                     )}
                   </DialogContent>
